@@ -1,0 +1,3 @@
+[submodule "ecdsa/submodules/sha256_python3"]
+	path = ecdsa/submodules/sha256_python3
+	url = git@github.com:sj-piano/sha256_python3.git
