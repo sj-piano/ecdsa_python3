@@ -1,0 +1,16 @@
+
+
+
+# Notes
+
+Add a submodule:
+```
+git submodule add git@github.com:sj-piano/sha256_python3.git ecdsa/submodules/sha256_python3
+```
+
+Initialise submodules:
+```
+git submodule update --init --recursive
+```
+
+Note: After running `git pull`, need to then run `git submodule update`.
