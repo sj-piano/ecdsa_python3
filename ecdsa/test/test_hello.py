@@ -19,9 +19,9 @@ def setup_module(pytestconfig):
   # If log_level is supplied to pytest in the commandline args, then use it to set up the logging in the application code.
   log_level = pytestconfig.getoption('log_cli_level')
   if log_level is not None:
-  log_level = log_level.lower()
-  code.setup(log_level = log_level)
-  submodules.setup(log_level = log_level)
+    log_level = log_level.lower()
+    code.setup(log_level = log_level)
+    submodules.setup(log_level = log_level)
 
 
 

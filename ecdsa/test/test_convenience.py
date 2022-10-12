@@ -27,9 +27,9 @@ def setup_module(pytestconfig):
   # If log_level is supplied to pytest in the commandline args, then use it to set up the logging in the application code.
   log_level = pytestconfig.getoption('log_cli_level')
   if log_level is not None:
-  log_level = log_level.lower()
-  code.setup(log_level = log_level)
-  submodules.setup(log_level = log_level)
+    log_level = log_level.lower()
+    code.setup(log_level = log_level)
+    submodules.setup(log_level = log_level)
 
 
 
@@ -58,12 +58,12 @@ def test_hello_data():
 
 def test_empty_string():
   with pytest.raises(ValueError):
-  x = convenience.private_key_hex_to_public_key_hex('')
+    x = convenience.private_key_hex_to_public_key_hex('')
 
 
 def test_0():
   with pytest.raises(ValueError):
-  x = convenience.private_key_hex_to_public_key_hex('0')
+    x = convenience.private_key_hex_to_public_key_hex('0')
 
 
 def test_1():
@@ -74,7 +74,7 @@ def test_1():
 def test_max_32_byte_value():
   max_value = 'ff' * 32
   with pytest.raises(ValueError):
-  x = convenience.private_key_hex_to_public_key_hex(max_value)
+    x = convenience.private_key_hex_to_public_key_hex(max_value)
 
 
 def test_secp256k1_order_n():
@@ -82,7 +82,7 @@ def test_secp256k1_order_n():
   n = n.replace(' ', '').lower()
   # fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141
   with pytest.raises(ValueError):
-  x = convenience.private_key_hex_to_public_key_hex(n)
+    x = convenience.private_key_hex_to_public_key_hex(n)
 
 
 def test_max_permitted_private_key():
@@ -114,15 +114,15 @@ def test_alphanumeric():
   private_key_ascii = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
   private_key_hex = private_key_ascii.encode('ascii').hex()
   with pytest.raises(ValueError) as exc_info:
-  x = convenience.private_key_hex_to_public_key_hex(private_key_hex)
-  assert str(exc_info.value) == 'A Bitcoin private key must be within the domain [1, n-1], where n is 115792089237316195423570985008687907852837564279074904382605163141518161494337. However, it is 52152751553716308763301261451955289837699979387937179883194000124698180158127126510677472592299463162814556178025286293724858735984083006576569825337, which is greater than n.'
+    x = convenience.private_key_hex_to_public_key_hex(private_key_hex)
+    assert str(exc_info.value) == 'A Bitcoin private key must be within the domain [1, n-1], where n is 115792089237316195423570985008687907852837564279074904382605163141518161494337. However, it is 52152751553716308763301261451955289837699979387937179883194000124698180158127126510677472592299463162814556178025286293724858735984083006576569825337, which is greater than n.'
 
 
 def test_lorem_ipsum():
   private_key_ascii = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
   private_key_hex = private_key_ascii.encode('ascii').hex()
   with pytest.raises(ValueError) as exc_info:
-  x = convenience.private_key_hex_to_public_key_hex(private_key_hex)
+    x = convenience.private_key_hex_to_public_key_hex(private_key_hex)
 
 
 def test_64_bytes():
@@ -131,7 +131,7 @@ def test_64_bytes():
   assert len(private_key_bytes) == 64
   private_key_hex = hexlify(private_key_bytes).decode('ascii')
   with pytest.raises(ValueError):
-  x = convenience.private_key_hex_to_public_key_hex(private_key_hex)
+    x = convenience.private_key_hex_to_public_key_hex(private_key_hex)
 
 
 def test_32_bytes():
@@ -145,14 +145,14 @@ def test_fox_1():
   private_key_ascii = 'The quick brown fox jumps over the lazy dog'
   private_key_hex = private_key_ascii.encode('ascii').hex()
   with pytest.raises(ValueError):
-  x = convenience.private_key_hex_to_public_key_hex(private_key_hex)
+    x = convenience.private_key_hex_to_public_key_hex(private_key_hex)
 
 
 def test_fox_2():
   private_key_ascii = 'The quick brown fox jumps over the lazy cog'
   private_key_hex = private_key_ascii.encode('ascii').hex()
   with pytest.raises(ValueError):
-  x = convenience.private_key_hex_to_public_key_hex(private_key_hex)
+    x = convenience.private_key_hex_to_public_key_hex(private_key_hex)
 
 
 def test_signature():
@@ -175,7 +175,7 @@ def test_signature_high_s():
   signature_is_valid = convenience.verify_signature(public_key_hex, data_hex, signature_hex)
   assert signature_is_valid
   with pytest.raises(ValueError):
-  signature_is_valid_2 = convenience.verify_signature_low_s(public_key_hex, data_hex, signature_hex)
+    signature_is_valid_2 = convenience.verify_signature_low_s(public_key_hex, data_hex, signature_hex)
 
 
 
