@@ -149,16 +149,16 @@ def configure_module_logger(
     if log_dir != '':
       if not os.path.exists(log_dir):
         os.makedirs(log_dir)
-  # Note: If log file already exists, new log lines will be appended to it.
-  file_handler = logging.FileHandler(log_file, mode='a', delay=True)
-  # If delay is true, then file opening is deferred until the first call to emit().
-  file_handler.setLevel(level)
-  # It turns out that the colorLog formatter's ANSI escape codes work in 'cat' & 'tail' (but not vim).
-  # 'less' can, with the -R flag.
-  # To display in vim, strip the escape chars: $ sed 's|\x1b\[[;0-9]*m||g' somefile | vim -
-  if not colorlog_imported:
-    file_handler.setFormatter(log_formatter)
-  else:
-    file_handler.setFormatter(log_formatter2)
-  logger.addHandler(file_handler)
-  logger.initialised = True
+    # Note: If log file already exists, new log lines will be appended to it.
+    file_handler = logging.FileHandler(log_file, mode='a', delay=True)
+    # If delay is true, then file opening is deferred until the first call to emit().
+    file_handler.setLevel(level)
+    # It turns out that the colorLog formatter's ANSI escape codes work in 'cat' & 'tail' (but not vim).
+    # 'less' can, with the -R flag.
+    # To display in vim, strip the escape chars: $ sed 's|\x1b\[[;0-9]*m||g' somefile | vim -
+    if not colorlog_imported:
+      file_handler.setFormatter(log_formatter)
+    else:
+      file_handler.setFormatter(log_formatter2)
+    logger.addHandler(file_handler)
+    logger.initialised = True
