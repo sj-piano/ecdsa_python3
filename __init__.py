@@ -50,7 +50,7 @@ def setup(
     log_file = None,
     ):
   # Configure logger for this module.
-  ripemd160.util.module_logger.configure_module_logger(
+  ecdsa.util.module_logger.configure_module_logger(
     logger = logger,
     logger_name = __name__,
     log_level = log_level,
@@ -60,7 +60,7 @@ def setup(
   )
   deb('Setup complete.')
   # Configure modules further down in this package.
-  ripemd160.setup(
+  ecdsa.setup(
     log_level = log_level,
     debug = debug,
     log_timestamp = log_timestamp,
