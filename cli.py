@@ -267,8 +267,6 @@ def sign_data(a):
 
 
 
-
-
 def stop(msg=None):
   if msg is not None:
     print(msg)
@@ -280,3 +278,4 @@ def stop(msg=None):
 
 if __name__ == '__main__':
   main()
+
