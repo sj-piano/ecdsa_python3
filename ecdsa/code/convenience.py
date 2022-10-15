@@ -196,7 +196,7 @@ def validate_printable_ascii(data):
 
 
 def validate_private_key_hex(private_key_hex):
-  v.validate_hex(private_key_hex)
+  v.validate_hex_length(private_key_hex, 32)
   private_key_int = int(private_key_hex, 16)
   # Ensure that the private key integer is within the valid domain for Bitcoin private keys.
   n_int = get_secp256k1_n_int()
