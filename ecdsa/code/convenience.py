@@ -108,7 +108,6 @@ def signature_s_is_high(signature_hex):
   n_int = get_secp256k1_n_int()
   limit_int = int(n_int // 2)
   limit_hex = hex(limit_int)
-  print(limit_hex)
   s_is_high = s_int > limit_int
   return s_is_high
 
@@ -170,6 +169,7 @@ def private_key_hex_to_public_key_hex(private_key_hex):
   verifying_key_hex = hexlify(verifying_key_bytes).decode('ascii')
   # Example verifying_key_hex (128 characters, 64 bytes):
   # 49951cc5477fc8815a3050025b5bceaaa156941620f92eff76891a46d5d996fd521aefae6117baa5f6f0826bf8046e565c27653acc7bd892bd302cffd29c4401
+  v.validate_hex_length(verifying_key_hex, 64)
   return verifying_key_hex
 
 
