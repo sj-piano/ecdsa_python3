@@ -13,25 +13,25 @@ Uses the Bitcoin curve (secp256k1) by default.
 
 ```bash
 
-python3 cli.py
+python cli.py
 
-python3 cli.py --help
+python cli.py --help
 
-python3 cli.py --task hello
+python cli.py --task hello
 
-python3 cli.py --task hello --log-level=info
+python cli.py --task hello --log-level=info
 
-python3 cli.py --task hello --log-level=debug
+python cli.py --task hello --log-level=debug
 
-python3 cli.py --task get_python_version
+python cli.py --task get_python_version
 
-python3 cli.py --task get_public_key --private-key-hex "1234 aabb"
+python cli.py --task get_public_key --private-key-hex "1234 aabb"
 
-python3 cli.py --task get_public_key --private-key-hex-file ecdsa/data/private_key_hex1.txt
+python cli.py --task get_public_key --private-key-hex-file ecdsa/data/private_key_hex1.txt
 
-python3 cli.py --task sign_data --private-key-hex "1234 aabb" --data="hello world"
+python cli.py --task sign_data --private-key-hex "1234 aabb" --data="hello world"
 
-python3 cli.py --task sign_data --private-key-hex "1234 aabb" --data=ecdsa/data/data1.txt
+python cli.py --task sign_data --private-key-hex "1234 aabb" --data=ecdsa/data/data1.txt
 
 ```
 
