@@ -25,6 +25,7 @@ hello = ecdsa.code.hello.hello
 validate = ecdsa.util.validate
 configure_module_logger = ecdsa.util.module_logger.configure_module_logger
 #submodules = ecdsa.submodules
+format_private_key_hex = ecdsa.code.convenience.format_private_key_hex
 validate_private_key_hex = ecdsa.code.convenience.validate_private_key_hex
 private_key_hex_to_public_key_hex = ecdsa.code.convenience.private_key_hex_to_public_key_hex
 create_deterministic_signature = ecdsa.code.convenience.create_deterministic_signature_low_s
