@@ -3,6 +3,7 @@ import logging
 import os
 import string
 import binascii
+import re
 
 
 
@@ -86,6 +87,7 @@ def create_deterministic_signature_low_s(private_key_hex, data_hex):
 
 def create_deterministic_signature(private_key_hex, data_hex, hash_function=SHA256):
   # Validate input.
+  private_key_hex = format_private_key_hex(private_key_hex)
   validate_private_key_hex(private_key_hex)
   v.validate_hex(data_hex)
   if hash_function != SHA256:
@@ -155,6 +157,7 @@ def private_key_hex_to_public_key_hex(private_key_hex):
   if private_key_hex == '':
     msg = "For private_key_hex, received empty string."
     raise ValueError(msg)
+  private_key_hex = format_private_key_hex(private_key_hex)
   validate_private_key_hex(private_key_hex)
   private_key_int = int(private_key_hex, 16)
   signing_key = keys.SigningKey.from_secret_exponent(private_key_int, curve=SECP256k1)
@@ -206,6 +209,21 @@ def validate_private_key_hex(private_key_hex):
     comp = 'less' if private_key_int < 0 else 'greater'
     msg += ', which is {comp} than n.'.format(**vars())
     raise ValueError(msg)
+
+
+def format_private_key_hex(private_key_hex):
+  # Example private_key_hex values:
+  # '1234aabb'
+  # '1234 aa bb'
+  # '1234 AABB'
+  private_key_hex = remove_whitespace(private_key_hex).lower()
+  if len(private_key_hex) < 64:
+    private_key_hex = private_key_hex.zfill(64)
+  return private_key_hex
+
+
+def remove_whitespace(text):
+  return re.sub(r"\s+", "", text)
 
 
 def get_secp256k1_n_int():
