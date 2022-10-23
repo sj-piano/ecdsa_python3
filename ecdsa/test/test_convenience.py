@@ -41,7 +41,7 @@ def setup_module(pytestconfig):
 def test_hello():
   private_key_ascii = 'hello world'
   private_key_bytes = private_key_ascii.encode('ascii')
-  private_key_hex = hexlify(private_key_bytes).decode('ascii')
+  private_key_hex = private_key_bytes.hex()
   x = convenience.private_key_hex_to_public_key_hex(private_key_hex)
   assert x == '405584433209ceb6c96353d8663f6f44dafbfed807d5eef9840ce3ccac73748cea25d68a7da711a1e29e63a796caff8e9b65e26902d2d0defc79688679a4b691'
 
