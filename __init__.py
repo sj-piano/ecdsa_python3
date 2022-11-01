@@ -28,8 +28,13 @@ configure_module_logger = ecdsa.util.module_logger.configure_module_logger
 format_private_key_hex = ecdsa.code.convenience.format_private_key_hex
 validate_private_key_hex = ecdsa.code.convenience.validate_private_key_hex
 private_key_hex_to_public_key_hex = ecdsa.code.convenience.private_key_hex_to_public_key_hex
-create_deterministic_signature = ecdsa.code.convenience.create_deterministic_signature_low_s
-verify_signature = ecdsa.code.convenience.verify_signature_low_s
+create_deterministic_signature = ecdsa.code.convenience.create_deterministic_signature
+create_deterministic_signature_low_s = ecdsa.code.convenience.create_deterministic_signature_low_s
+create_deterministic_signature_for_digest = ecdsa.code.convenience.create_deterministic_signature_for_digest
+create_deterministic_signature_for_digest_low_s = ecdsa.code.convenience.create_deterministic_signature_for_digest_low_s
+verify_signature = ecdsa.code.convenience.verify_signature
+verify_signature_low_s = ecdsa.code.convenience.verify_signature_low_s
+verify_signature_digest_low_s = ecdsa.code.convenience.verify_signature_digest_low_s
 
 
 
