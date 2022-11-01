@@ -29,6 +29,13 @@ SHA256 = submodules.sha256_python3.SHA256
 
 
 
+# Notes:
+# - I don't completely understand the ECDSA library.
+# - This file contains the interface between my understanding and the library.
+
+
+
+
 # Set up logger for this module. By default, it produces no output.
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())
@@ -66,6 +73,7 @@ def verify_signature_low_s(public_key_hex, data_hex, signature_hex):
   return signature_is_valid
 
 
+
 def verify_signature(public_key_hex, data_hex, signature_hex, hash_function=SHA256):
   v.validate_hex(public_key_hex)
   v.validate_hex(signature_hex)
@@ -75,6 +83,25 @@ def verify_signature(public_key_hex, data_hex, signature_hex, hash_function=SHA2
   data_bytes = unhexlify(data_hex)
   verifying_key = VerifyingKey.from_string(public_key_bytes, curve=SECP256k1, hashfunc=SHA256)
   signature_is_valid = verifying_key.verify(signature_bytes, data_bytes, hashfunc=SHA256)
+  return signature_is_valid
+
+
+def verify_signature_digest_low_s(public_key_hex, digest_hex, signature_hex):
+  if signature_s_is_high(signature_hex):
+    raise ValueError('Signature contains a high S value.')
+  signature_is_valid = verify_signature_digest(public_key_hex, digest_hex, signature_hex)
+  return signature_is_valid
+
+
+def verify_signature_digest(public_key_hex, digest_hex, signature_hex):
+  v.validate_hex(public_key_hex)
+  v.validate_hex(signature_hex)
+  v.validate_hex(digest_hex)
+  public_key_bytes = unhexlify(public_key_hex)
+  signature_bytes = unhexlify(signature_hex)
+  digest_bytes = unhexlify(digest_hex)
+  verifying_key = VerifyingKey.from_string(public_key_bytes, curve=SECP256k1, hashfunc=SHA256)
+  signature_is_valid = verifying_key.verify_digest(signature_bytes, digest_bytes)
   return signature_is_valid
 
 
@@ -101,6 +128,46 @@ def create_deterministic_signature(private_key_hex, data_hex, hash_function=SHA2
   signature = signing_key.sign_deterministic(data_bytes, hashfunc=SHA256)
   signature_hex = hexlify(signature).decode('ascii')
   return signature_hex
+
+
+def create_deterministic_signature_for_digest_low_s(private_key_hex, digest_hex):
+  signature_hex = create_deterministic_signature_for_digest(private_key_hex, digest_hex)
+  if signature_s_is_high(signature_hex):
+    signature_hex = ensure_low_s_value(signature_hex)
+  return signature_hex
+
+
+def create_deterministic_signature_for_digest(private_key_hex, digest_hex):
+  # This function signs data that has already been hashed externally.
+  # We confirm that it's short enough to be signed using the selected curve.
+  # Validate input.
+  private_key_hex = format_private_key_hex(private_key_hex)
+  validate_private_key_hex(private_key_hex)
+  v.validate_hex(digest_hex)
+  # Future: Is there any problem if the hash digest is shorter than the curve ?
+  v.validate_hex_length(digest_hex, 32)  # hardcode for now.
+  # Derive signing key object from private key hex.
+  private_key_int = int(private_key_hex, 16)
+  signing_key = keys.SigningKey.from_secret_exponent(private_key_int, curve=SECP256k1)
+  # Confirm that the hash digest byte length is not greater than curve.baselen, where the curve is secp256k1.
+  max_length = signing_key.curve.baselen
+  if hex_len(digest_hex) > max_length:
+    msg = "This curve ({}) has an order of length {}, which is not long enough to sign a digest of length {}."
+    msg = msg.format("SECP256k1", max_length, hex_len(digest_hex))
+    raise ValueError(msg)
+  # Make the signature.
+  digest_bytes = bytes.fromhex(digest_hex)
+  signature_bytes = signing_key.sign_digest_deterministic(digest_bytes)
+  signature_hex = signature_bytes.hex()
+  validate_signature_hex(signature_hex)
+  return signature_hex
+
+
+def validate_signature_hex(signature_hex):
+  # The domain for both r and s is the same as the domain for bitcoin private keys.
+  r_hex, s_hex = signature_hex_to_r_and_s_hex(signature_hex)
+  validate_private_key_hex(r_hex)
+  validate_private_key_hex(s_hex)
 
 
 def signature_s_is_high(signature_hex):
@@ -240,4 +307,11 @@ def get_secp256k1_n_hex():
   n_hex = n_hex.lower()
   n_hex = n_hex.replace(' ','')
   return n_hex
+
+
+def hex_len(x):
+  # Divide hex length by 2 to get hex length in bytes.
+  v.validate_hex(x)
+  n = len(x) // 2
+  return n
 
