@@ -163,6 +163,31 @@ def create_deterministic_signature_for_digest(private_key_hex, digest_hex):
   return signature_hex
 
 
+def create_signature_for_digest_low_s(private_key_hex, digest_hex, random_value_hex):
+  signature_hex = create_signature_for_digest(private_key_hex, digest_hex, random_value_hex)
+  if signature_s_is_high(signature_hex):
+    signature_hex = ensure_low_s_value(signature_hex)
+  return signature_hex
+
+
+def create_signature_for_digest(private_key_hex, digest_hex, random_value_hex):
+  # Non-deterministic signature. Random value must be generated using a good source of entropy.
+  private_key_hex = format_private_key_hex(private_key_hex)
+  validate_private_key_hex(private_key_hex)
+  v.validate_hex(digest_hex)
+  v.validate_hex_length(random_value_hex, 32)
+  # Derive signing key object from private key hex.
+  private_key_int = int(private_key_hex, 16)
+  signing_key = keys.SigningKey.from_secret_exponent(private_key_int, curve=SECP256k1)
+  # Create signature.
+  digest_bytes = bytes.fromhex(digest_hex)
+  random_value_int = int(random_value_hex, 16)
+  signature_bytes = signing_key.sign_digest(digest=digest_bytes, entropy=None, k=random_value_int)
+  signature_hex = signature_bytes.hex()
+  validate_signature_hex(signature_hex)
+  return signature_hex
+
+
 def validate_signature_hex(signature_hex):
   # The domain for both r and s is the same as the domain for bitcoin private keys.
   r_hex, s_hex = signature_hex_to_r_and_s_hex(signature_hex)
@@ -178,6 +203,7 @@ def signature_s_is_high(signature_hex):
   limit_int = int(n_int // 2)
   limit_hex = hex(limit_int)
   s_is_high = s_int > limit_int
+  #deb(s_is_high: {}".format(s_is_high))
   return s_is_high
 
 
@@ -230,7 +256,7 @@ def private_key_hex_to_public_key_hex(private_key_hex):
   signing_key = keys.SigningKey.from_secret_exponent(private_key_int, curve=SECP256k1)
   signing_key_bytes = signing_key.to_string()
   signing_key_hex = hexlify(signing_key_bytes)
-  #print(signing_key_hex)
+  #deb(signing_key_hex)
   # Example signing_key_hex:
   # b'000000000000000000000000000000000000000000000000000000001234aabb'
   # Note: Same as private_key_hex but left-padded with zeros to reach 64 characters (32 bytes).
