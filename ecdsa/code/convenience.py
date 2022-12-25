@@ -82,6 +82,8 @@ def verify_signature(public_key_hex, data_hex, signature_hex, hash_function=SHA2
   signature_bytes = unhexlify(signature_hex)
   data_bytes = unhexlify(data_hex)
   verifying_key = VerifyingKey.from_string(public_key_bytes, curve=SECP256k1, hashfunc=SHA256)
+  # Note: This doesn't actually return a boolean. If there's an error, it raises an exception.
+  # Future: Catch the error and return False.
   signature_is_valid = verifying_key.verify(signature_bytes, data_bytes, hashfunc=SHA256)
   return signature_is_valid
 

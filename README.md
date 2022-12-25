@@ -27,11 +27,23 @@ python cli.py --task get_python_version
 
 python cli.py --task get_public_key --private-key-hex "1234 aabb"
 
+# Result:
+# 49951cc5477fc8815a3050025b5bceaaa156941620f92eff76891a46d5d996fd521aefae6117baa5f6f0826bf8046e565c27653acc7bd892bd302cffd29c4401
+
 python cli.py --task get_public_key --private-key-hex-file ecdsa/data/private_key_hex1.txt
 
 python cli.py --task sign_data --private-key-hex "1234 aabb" --data="hello world"
 
+# Result:
+# eab769600bf99d6287ed187cdea07f40f7f3a37cb3265bd8af05f60361c4366239a48fe4917d6d9e19f11f81c0d453f76bcf74a42645e1fe6d7063f29c986d24
+
 python cli.py --task sign_data --private-key-hex "1234 aabb" --data=ecdsa/data/data1.txt
+
+PUBLIC_KEY_HEX="49951cc5477fc8815a3050025b5bceaaa156941620f92eff76891a46d5d996fd521aefae6117baa5f6f0826bf8046e565c27653acc7bd892bd302cffd29c4401"
+
+SIGNATURE_HEX="eab769600bf99d6287ed187cdea07f40f7f3a37cb3265bd8af05f60361c4366239a48fe4917d6d9e19f11f81c0d453f76bcf74a42645e1fe6d7063f29c986d24"
+
+python cli.py --task verify_data_signature --public-key-hex=$PUBLIC_KEY_HEX --signature-hex=$SIGNATURE_HEX --data="hello world"
 
 ```
 

@@ -85,23 +85,37 @@ def main():
     default='bitcoin',
   )
 
-  parser.add_argument(
+  group = parser.add_mutually_exclusive_group()
+
+  group.add_argument(
     '--private-key-hex', dest='private_key_hex',
     help="A private key in hex string form.",
   )
 
-  parser.add_argument(
+  group.add_argument(
     '--private-key-hex-file', dest='private_key_hex_file',
     help="Path to file that contains a private key in hex string form.",
   )
 
   parser.add_argument(
-    '--data',
-    help="Data string.",
+    '--public-key-hex', dest='public_key_hex', type=str,
+    help="A public key in hex string form.",
   )
 
   parser.add_argument(
-    '--data-file', dest='data_file',
+    '--signature-hex', dest='signature_hex', type=str,
+    help="A signature in hex string form.",
+  )
+
+  group = parser.add_mutually_exclusive_group()
+
+  group.add_argument(
+    '--data', type=str,
+    help="Data string.",
+  )
+
+  group.add_argument(
+    '--data-file', dest='data_file', type=str,
     help="Path to file that contains a data string.",
   )
 
@@ -138,6 +152,13 @@ def main():
 
   a = parser.parse_args()
 
+  print_args = 0
+  if print_args:
+    print()
+    for k in sorted(a.__dict__.keys()):
+      print(k, '=', a.__dict__[k])
+    print()
+
   # Check and analyse arguments
   if not a.log_to_file:
     a.log_file = None
@@ -146,26 +167,11 @@ def main():
     msg = "Currently, all convenience code (e.g. cli.py) has only been tested with the Bitcoin curve (secp256k1)."
     raise ValueError(msg)
 
-  if a.task == 'get_public_key':
-    msg1 = "One of these arguments must be supplied: --private_key_hex '<string_value>' or --private_key_hex_file '<file_path>'"
-    msg2 = "Either --private_key_hex '<string_value>' or --private_key_hex_file '<file_path>' must be supplied, but not both."
-    if not a.private_key_hex and not a.private_key_hex_file:
-      raise ValueError(msg1)
-    if a.private_key_hex and a.private_key_hex_file:
-      raise ValueError(msg2)
-    if a.private_key_hex_file:
-      a.private_key_hex = open(a.private_key_hex_file).read()
+  if a.private_key_hex_file:
+    a.private_key_hex = open(a.private_key_hex_file).read()
 
-  if a.task == 'sign':
-    msg1 = "One of these arguments must be supplied: --data '<string_value>' or --data_file '<file_path>'"
-    msg2 = "Either --data '<string_value>' or --data_file '<file_path>' must be supplied, but not both."
-    if not a.data and not a.data_file:
-      raise ValueError(msg1)
-    if a.data and a.data_file:
-      raise ValueError(msg2)
-    if a.data_file:
-      a.data = open(a.data_file).read()
-
+  if a.data_file:
+    a.data = open(a.data_file).read()
 
 
   # Setup
@@ -182,6 +188,7 @@ hello hello2 hello3
 get_python_version
 get_public_key
 sign_data
+verify_data_signature
 """.split()
   if a.task not in tasks:
     msg = "Unrecognised task: {}".format(a.task)
@@ -263,6 +270,22 @@ def sign_data(a):
   # Verify the signature as a double-check.
   public_key_hex = ecdsa.code.convenience.private_key_hex_to_public_key_hex(private_key_hex)
   valid_signature = ecdsa.code.convenience.verify_signature(public_key_hex, data_hex, signature_hex)
+
+
+
+
+def verify_data_signature(a):
+  data_ascii = a.data
+  ecdsa.code.convenience.validate_printable_ascii(data_ascii)
+  data_hex = hexlify(data_ascii.encode()).decode('ascii')
+  public_key_hex = remove_whitespace(a.public_key_hex).lower()
+  signature_hex = remove_whitespace(a.signature_hex).lower()
+  valid_signature = ecdsa.code.convenience.verify_signature(public_key_hex, data_hex, signature_hex)
+  if not valid_signature:
+    msg = "Invalid signature!"
+    raise ValueError(msg)
+  msg = "Valid signature."
+  print(msg)
 
 
 
