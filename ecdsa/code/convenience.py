@@ -103,7 +103,12 @@ def verify_signature_digest(public_key_hex, digest_hex, signature_hex):
   signature_bytes = unhexlify(signature_hex)
   digest_bytes = unhexlify(digest_hex)
   verifying_key = VerifyingKey.from_string(public_key_bytes, curve=SECP256k1, hashfunc=SHA256)
-  signature_is_valid = verifying_key.verify_digest(signature_bytes, digest_bytes)
+  signature_is_valid = True
+  try:
+     verifying_key.verify_digest(signature_bytes, digest_bytes)
+  except Exception as e:
+    logger.error(e)
+    signature_is_valid = False
   return signature_is_valid
 
 
